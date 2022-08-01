@@ -3,6 +3,8 @@ from credentials import token_pid171
 from credentials import redcap_api_url
 import pandas as pd
 import redcap
+import os
+import re
 
 
 # path =
@@ -67,6 +69,32 @@ keep_columns = [
                 'tot_conc_vol',
                 'tss'
                 ]
+
+
+def scan_directory(path_input = None):
+    """
+    Query  working directory for dcipher_export.csv
+    
+    working path: 
+    r"Y:\Confidential\DCHS\PHOCIS\Surveillance\COVID-19 Wastewater Surveillance\DCIPHER_download\to_redcap"
+
+    args:
+        path_input = string, path to directory to be scanned. 
+    return: list of file names
+    """
+    if path_input is None:
+        path = "./"
+        
+    path = path_input 
+    
+    # iterate filenames in directory and append .xlsx to files list
+    for fname in os.listdir(path):
+        if re.search(r'dcipher_export.csv', fname):
+            df = pd.read_csv(path + "\\" + fname)
+        else:
+            "no file named 'dcipher_export.csv' in directory."
+            pass
+    return df
 
 
 def rename_columns(df):
